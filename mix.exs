@@ -7,7 +7,9 @@ defmodule Biggie.MixProject do
       version: "0.1.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      description: description()
     ]
   end
 
@@ -21,10 +23,29 @@ defmodule Biggie.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       {:google_api_big_query, "~> 0.1.0"},
-      {:goth, "~> 0.6.0"}
+      {:goth, "~> 0.6.0"},
+
+      {:ex_doc, "~> 0.18.0", only: :dev}
+    ]
+  end
+
+  defp description do
+    """
+    Biggie is an elixir client for interfacing with the
+    [BigQuery REST API](https://cloud.google.com/bigquery/docs/reference/rest/v2/).
+    """
+  end
+
+  defp package do
+    [
+      files: ~w(lib mix.exs README.md LICENSE),
+      maintainers: ["Clayton Gentry"],
+      licenses: ["Apache 2.0"],
+      links: %{
+        "Github" => "http://github.com/invrs/biggie",
+        "Docs"   => "http://hexdocs.pm/biggie",
+      }
     ]
   end
 end
