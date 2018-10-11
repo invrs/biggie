@@ -1,4 +1,5 @@
 defmodule Biggie.Models.JobConfigurationQuery do
+
   alias GoogleApi.BigQuery.V2.Model.JobConfigurationQuery, as: Base
 
   @moduledoc """
