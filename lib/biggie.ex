@@ -17,6 +17,8 @@ defmodule Biggie do
     JobConfigurationQuery
   }
 
+  require Logger
+
   @poll_interval 4_000 # four seconds
 
   @doc """
@@ -41,22 +43,38 @@ defmodule Biggie do
   end
 
   @doc """
+  Fetches a list of results for the given job. If the job is not finished,
+  the process will poll until it is.
+  """
+  def fetch_results(job_id, offset \\ 0, limit \\ 500, acc \\ []) do
+    case Biggie.poll_for_results(job_id, offset, limit) do
+      {:ok, %{rows: nil}}  -> acc
+      {:ok, %{rows: rows}} ->
+        fetch_results(job_id, offset + limit, limit, rows ++ acc)
+
+      {:error, reason} ->
+        Logger.error("Could not fetch job results: #{inspect(reason)}")
+        raise(reason)
+    end
+  end
+
+  @doc """
   Polls for query results
 
   If the query is done, results will be returned. If the query
   is still running, sleeps for an interval defined in the
   @poll_interval module attribute and then tries again.
   """
-  def fetch_results(job_id, offset, limit, poll \\ 0)
-  def fetch_results(_job_id, _offset, _limit, poll) when poll > 5 do
+  def poll_for_results(job_id, offset, limit, poll \\ 0)
+  def poll_for_results(_job_id, _offset, _limit, poll) when poll > 5 do
     {:error, :timeout}
   end
-  def fetch_results(job_id, offset, limit, poll) do
+  def poll_for_results(job_id, offset, limit, poll) do
     case Api.Jobs.get_query_results(job_id, [maxResults: limit, startIndex: offset]) do
       {:ok, %{jobComplete: true} = results} -> {:ok, results}
       {:ok, %{jobComplete: false}} ->
         :timer.sleep(@poll_interval)
-        fetch_results(job_id, offset, limit, poll + 1)
+        poll_for_results(job_id, offset, limit, poll + 1)
 
       error -> error
     end
