@@ -47,7 +47,7 @@ defmodule Biggie do
   the process will poll until it is.
   """
   def fetch_results(job_id, offset \\ 0, limit \\ 500, acc \\ []) do
-    case Biggie.poll_for_results(job_id, offset, limit) do
+    case poll_for_results(job_id, offset, limit) do
       {:ok, %{rows: nil}}  -> acc
       {:ok, %{rows: rows}} ->
         fetch_results(job_id, offset + limit, limit, rows ++ acc)
@@ -56,6 +56,16 @@ defmodule Biggie do
         Logger.error("Could not fetch job results: #{inspect(reason)}")
         raise(reason)
     end
+  end
+
+  @doc """
+  Lists rows in the given table.
+  """
+  def tabledata_list(dataset_id, table_id, offset \\ 0, limit \\ 500) do
+    Api.Tabledata.list([dataset_id, table_id], [
+      maxResults: limit,
+      startIndex: offset
+    ])
   end
 
   @doc """
