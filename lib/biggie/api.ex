@@ -16,10 +16,13 @@ defmodule Biggie.Api do
     project_id = Application.get_env(:biggie, :project_id)
     args = [Connection.new(token), project_id | args] ++ [opts]
 
-    apply(Api.Jobs, method, args)
+    Api |> Module.concat(get_api_module(method)) |> apply(method, args)
   end
 
   defp _request({:error, reason}, _method, _args, _opts) do
     {:error, reason}
   end
+
+  defp get_api_module(:bigquery_tabledata_list), do: Tabledata
+  defp get_api_module(_),                        do: Jobs
 end
