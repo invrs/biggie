@@ -17,7 +17,6 @@ defmodule Biggie.Api do
     args       = [Connection.new(token), project_id | args] ++ [opts]
     module     = Module.concat(Api, get_api_module(method))
 
-    IO.puts("[applying] #{inspect(module)} — #{inspect(method)} — #{inspect(args)}")
     apply(module, method, args)
   end
 
