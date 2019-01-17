@@ -14,9 +14,11 @@ defmodule Biggie.Api do
 
   defp _request({:ok, %{token: token}}, method, args, opts) do
     project_id = Application.get_env(:biggie, :project_id)
-    args = [Connection.new(token), project_id | args] ++ [opts]
+    args       = [Connection.new(token), project_id | args] ++ [opts]
+    module     = Module.concat(Api, get_api_module(method))
 
-    Api |> Module.concat(get_api_module(method)) |> apply(method, args)
+    IO.puts("[applying] #{inspect(module)} — #{inspect(method)} — #{inspect(args)}")
+    apply(module, method, args)
   end
 
   defp _request({:error, reason}, _method, _args, _opts) do
