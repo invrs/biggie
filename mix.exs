@@ -24,7 +24,7 @@ defmodule Biggie.MixProject do
   defp deps do
     [
       {:google_api_big_query, "~> 0.1.0"},
-      {:goth, "~> 0.6.0"},
+      {:goth, "~> 1.0"},
 
       {:ex_doc, "~> 0.18.0", only: :dev}
     ]
