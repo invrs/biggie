@@ -4,7 +4,7 @@ defmodule Biggie.MixProject do
   def project do
     [
       app: :biggie,
-      version: "0.1.5",
+      version: "0.1.6",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -24,7 +24,7 @@ defmodule Biggie.MixProject do
   defp deps do
     [
       {:google_api_big_query, "~> 0.1.0"},
-      {:goth, "~> 0.6.0"},
+      {:goth, "~> 1.0"},
 
       {:ex_doc, "~> 0.18.0", only: :dev}
     ]
